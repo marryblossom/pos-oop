@@ -1,4 +1,5 @@
 function promotionHandle(){
+  var promotionPrice = new promotionPriceHandle();
   this.promotionTypes = function (barCode){
     var allPromption = loadPromotions();
     var promptionTypes = [];
@@ -12,8 +13,7 @@ function promotionHandle(){
 
   this.getPromption = function (type,num,price){
     if(type == 'BUY_TWO_GET_ONE_FREE'){
-      var promotionHandle = new promotionPriceHandle();
-      return promotionHandle.promotion(num,price);
+      return promotionPrice.promotion(num,price);
     }
   };
 
