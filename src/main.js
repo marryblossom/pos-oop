@@ -19,12 +19,12 @@ function getAllString(input){
     var oneBarCode = simpleInput[i];
     var item = getItemWithBarCode(oneBarCode);
     var num = calculateBoughtNum(item,input);
-    if(item != ''){
+    if(item !== ''){
       var subTotal = calculateSubtotal(item,num);
       total += subTotal;
       subTotalstr += getEverySubtotalString(item, num, subTotal);
     }
-    if(getFreeString(item,num) != ''){
+    if(getFreeString(item,num) !== ''){
       promptionString += getFreeString(item,num) + '\n';
       free += item.price * parseInt(num/3);
     }
@@ -42,8 +42,9 @@ function getEverySubtotalString(item, num, subTotal){
 
 function getFreeString(item,num){
   var str = '';
-  var promptionTypes = getPromptionTypes(item.barcode);
-  if(promptionTypes.length != 0){
+  var promotionResult = new promotionHandle();
+  var promptionTypes = promotionResult.promotionTypes(item.barcode);
+  if(promptionTypes.length !== 0){
     str += '名称：' + item.name + '，数量：' + parseInt(num / 3) + item.unit;
   }
   return str;
@@ -59,7 +60,7 @@ function getItemWithBarCode(barCode){
   var allItems = loadAllItems();
   var item = '';
   for(var i in allItems){
-    if(barCode.indexOf(allItems[i].barcode) == 0){
+    if(barCode.indexOf(allItems[i].barcode) === 0){
       item = allItems[i];
     }
   }
@@ -85,11 +86,13 @@ function deleteSameItems(input){
 /*************price calculate methods*****************/
 function calculateSubtotal(item, num){
   var subTotal = 0;
-  var promptionTypes = getPromptionTypes(item.barcode);
-  if(promptionTypes.length != 0){
+  var promotionResult = new promotionHandle();
+  var promptionTypes = promotionResult.promotionTypes(item.barcode);
+  if(promptionTypes.length !== 0){
     for(var i in promptionTypes){
       var type = promptionTypes[i];
-      subTotal += getPromptionResult(type,num,item.price);
+
+      subTotal += promotionResult.getPromption(type,num,item.price);
     }
   }else{
     subTotal = item.price * num;
@@ -107,25 +110,8 @@ function calculateBoughtNum(item,input){
 }
 
 /*************promption calculate method*****************/
-function getPromptionTypes(barCode){
-  var allPromption = loadPromotions();
-  var promptionTypes = [];
-  for(var i in allPromption){
-    if(isPromption(barCode,allPromption[i].barcodes)){
-      promptionTypes.push(allPromption[i].type);
-    }
-  }
-  return promptionTypes;
-}
 
-function isPromption(barCode,allPromption){
-  for(var j in allPromption){
-    if(barCode == allPromption[j]){
-      return true;
-    }
-  }
-  return false;
-}
+
 
 /*************util**************************/
 function digitToSting(num){
